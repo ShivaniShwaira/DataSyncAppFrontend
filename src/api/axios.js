@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://datasynctaskapp.onrender.com", // change
+  baseURL: "http://127.0.0.1:3000",      //"https://datasynctaskapp.onrender.com", // change
 });
 
 // Attach token automatically

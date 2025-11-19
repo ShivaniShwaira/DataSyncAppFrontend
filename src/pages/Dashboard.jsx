@@ -16,6 +16,9 @@ export default function Dashboard() {
         Minor Members
       </button>
 
+       <button onClick={() => (window.location.href = "/alerts")}>
+        Alerts
+      </button>
       <button onClick={logout}>Logout</button>
     </div>
   );

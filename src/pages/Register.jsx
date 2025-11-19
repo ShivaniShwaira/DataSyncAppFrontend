@@ -16,6 +16,7 @@ export default function Register() {
     try {
       const res = await registerUser(form);
       alert("Registration successful!");
+      window.location.href = "/dashboard";
     } catch (err) {
       alert(err.response?.data?.message || "Error");
     }
@@ -24,6 +25,9 @@ export default function Register() {
   return (
     <div>
       <h2>Register</h2>
+       <input name="userName" placeholder="Username" onChange={handleChange} />
+       <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} />
+      <input name="role" placeholder="Role" onChange={handleChange} />
       <input name="email" placeholder="Email" onChange={handleChange} />
       <input
         name="password"

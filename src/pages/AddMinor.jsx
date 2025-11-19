@@ -7,6 +7,7 @@ export default function AddMinor() {
     dob: "",
     relation: "",
     role: "minor",
+    deviceId:"12345"
   });
 
   const handleChange = (e) =>
