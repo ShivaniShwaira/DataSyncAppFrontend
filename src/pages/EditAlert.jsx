@@ -1,30 +1,71 @@
 import { useEffect, useState } from "react";
-import { editAlert, getAlertDetails, getAlertList } from "../api/alertApi";
+import { editAlert, getAlertDetails } from "../api/alertApi";
 
 export default function EditAlert() {
   const [data, setData] = useState(null);
 
   const alertId = new URLSearchParams(window.location.search).get("id");
 
+  // fields NOT to show in UI
+  const excludedFields = [
+    "_id",
+    "version",
+    "createdBy",
+    "deviceId",
+    "isDeleted",
+    "createdAt",
+    "updatedAt",
+    "__v",
+  ];
+
   useEffect(() => {
     loadAlert();
   }, []);
 
-  async function loadAlert() {
-    try {
-     
-      const res = await getAlertList("12345","",alertId);
-      console.log(res.data,"data--->>>>")
-    //    const found = res.data.data.find((a) => a._id == alertId);
-        const found = res.data.data;
-       setData(found);
-    } catch (err) {
-      alert(err.response?.data?.message);
-    }
-  }
+ async function loadAlert() {
+  try {
+    const res = await getAlertDetails(alertId);
+    const found = res.data.data;
 
-  const handleChange = (e) =>
-    setData({ ...data, [e.target.name]: e.target.value });
+    // Format date → YYYY-MM-DD
+    const formattedDate = found.date ? found.date.split("T")[0] : "";
+
+    // Convert "12:55 pm" → "12:55"
+    let formattedTime = "";
+    if (found.time) {
+      const t = found.time.toLowerCase();
+      let [hours, minutes] = t.replace("am", "").replace("pm", "").trim().split(":");
+
+      if (t.includes("pm") && hours !== "12") {
+        hours = String(Number(hours) + 12);
+      }
+      if (t.includes("am") && hours === "12") {
+        hours = "00";
+      }
+
+      // Final HH:mm format
+      formattedTime = `${hours}:${minutes}`;
+    }
+
+    setData({
+      ...found,
+      date: formattedDate,
+      time: formattedTime,
+    });
+  } catch (err) {
+    alert(err.response?.data?.message);
+  }
+}
+
+
+  // Generic input handler
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   async function save() {
     try {
@@ -48,26 +89,59 @@ export default function EditAlert() {
   if (!data) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h2>Edit Alert</h2>
+    <div style={{ padding: "20px" }}>
+      <h3>Edit Alert</h3>
 
-      <input name="title" value={data.name} onChange={handleChange} />
+      {Object.entries(data)
+        .filter(([key]) => !excludedFields.includes(key))
+        .map(([key, value]) => (
+          <div key={key} style={{ marginBottom: "15px" }}>
+            <label
+              style={{
+                display: "block",
+                marginBottom: "5px",
+                fontWeight: "bold",
+                textTransform: "capitalize",
+              }}
+            >
+              {key}
+            </label>
 
-      <input
-        name="date"
-        type="date"
-        // value={new Date(data.date)}
-        onChange={handleChange}
-      />
+            <input
+              name={key}
+              type={
+                key === "date"
+                  ? "date"
+                  : key === "time"
+                  ? "time"
+                  : "text"
+              }
+              value={value || ""}
+              onChange={handleChange}
+              style={{
+                width: "300px",
+                padding: "8px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            />
+          </div>
+        ))}
 
-      <input
-        name="time"
-        type="time"
-        value={new Date(data.date).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
-        onChange={handleChange}
-      />
-
-      <button onClick={save}>Save</button>
+      <button
+        onClick={save}
+        style={{
+          marginTop: "20px",
+          padding: "10px 20px",
+          background: "#007bff",
+          color: "white",
+          border: "none",
+          borderRadius: "5px",
+          cursor: "pointer",
+        }}
+      >
+        Save
+      </button>
     </div>
   );
 }

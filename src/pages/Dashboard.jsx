@@ -19,6 +19,9 @@ export default function Dashboard() {
        <button onClick={() => (window.location.href = "/alerts")}>
         Alerts
       </button>
+       <button onClick={() => (window.location.href = "/reports")}>
+        Reports
+      </button>
       <button onClick={logout}>Logout</button>
     </div>
   );

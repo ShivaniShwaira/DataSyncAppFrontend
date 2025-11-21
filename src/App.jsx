@@ -9,6 +9,9 @@ import Alerts from "./pages/Alerts";
 import AddAlerts from "./pages/AddAlerts";
 import EditAlert from "./pages/EditAlert";
 import AuthProvider from "./context/AuthContextFile";
+import Reports from "./pages/DocumentList";
+import EditDocument from "./pages/EditDocument";
+import UploadReport from "./pages/UploadReport";
 
 export default function App() {
   return (
@@ -24,7 +27,9 @@ export default function App() {
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/add-alerts" element={<AddAlerts />} />
           <Route path="/edit-alert" element={<EditAlert />} />
-
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/edit-reports" element={<EditDocument />} />
+          <Route path="/upload-reports" element={<UploadReport />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
