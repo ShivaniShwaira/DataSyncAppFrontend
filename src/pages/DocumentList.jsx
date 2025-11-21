@@ -30,13 +30,19 @@ export default function DocumentList() {
         Authorization:`Bearer ${token}`
       }
     });
-
+// Get filename from header (important)
+  let fileName = "download";
+  const disposition = res.headers["content-disposition"];
+  if (disposition && disposition.includes("filename=")) {
+    fileName = disposition.split("filename=")[1].replace(/"/g, "");
+  }
     const url=window.URL.createObjectURL(new Blob([res.data]));
     const link=document.createElement("a");
     link.href =url;
-    link.setAttribute("download","report.pdf");
+    link.setAttribute("download",fileName);
     document.body.appendChild(link);
     link.click();
+    link.remove();
   }
 
   async function deleteDoc(id) {
